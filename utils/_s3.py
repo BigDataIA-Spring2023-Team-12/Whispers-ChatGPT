@@ -1,5 +1,6 @@
 import boto3
 
+
 def upload_audio_to_s3(audio_file_path, s3_bucket_name, s3_object_key):
     """
     Uploads an audio file to an S3 bucket.
