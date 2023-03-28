@@ -56,6 +56,21 @@ def main():
 
 
 def get_files_from_s3_bucket(bucket_name, access_key, secret_key):
+    """
+    Retrieves a list of file names from an AWS S3 bucket.
+
+    Parameters:
+        bucket_name (str): The name of the S3 bucket to retrieve file names from.
+        access_key (str): The AWS access key ID.
+        secret_key (str): The AWS secret access key.
+
+    Returns:
+        List[str]: A list of file names in the S3 bucket.
+
+    Raises:
+        NoCredentialsError: If AWS credentials are not available.
+        Exception: If there was an error accessing the S3 bucket.
+    """
     s3 = boto3.client("s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key)
     files = []
     try:
@@ -70,6 +85,23 @@ def get_files_from_s3_bucket(bucket_name, access_key, secret_key):
 
 
 def upload_file_to_s3(file, bucket_name, access_key, secret_key):
+    """
+    Uploads a file object to an AWS S3 bucket.
+
+    Parameters:
+        file (file object): The file object to upload.
+        bucket_name (str): The name of the S3 bucket to upload to.
+        access_key (str): The AWS access key ID.
+        secret_key (str): The AWS secret access key.
+
+    Returns:
+        None
+
+    Raises:
+        NoCredentialsError: If AWS credentials are not available.
+        Exception: If there was an error uploading the file to S3.
+    """
+     
     s3 = boto3.client("s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key)
     # Button to upload file
     if st.button('Upload to S3') and file is not None:
