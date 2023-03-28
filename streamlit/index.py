@@ -54,6 +54,44 @@ def main():
         st.warning("Please select a file.")
     
 
+    st.markdown("---")
+
+
+    # Question input box and submit button
+    user_question = st.text_input('Ask a question related to the meeting!')
+    if st.button('Submit') and user_question:
+        write_question_to_database(user_question, 'questions.db')
+
+
+
+
+def write_question_to_database(question, db_path):
+    """
+    Writes a question to a SQLite database.
+
+    Parameters:
+        question (str): The question to be written to the database.
+        db_path (str): The file path of the SQLite database.
+
+    Returns:
+        None
+    """
+    # Connect to the SQLite database
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    # Write question to database
+    c.execute("INSERT INTO questions (question) VALUES (?)", (question,))
+    conn.commit()
+    st.write(f'You submitted the question: {question}')
+
+    # Close SQLite database connection
+    conn.close()
+
+
+
+
+
 
 def get_files_from_s3_bucket(bucket_name, access_key, secret_key):
     """
