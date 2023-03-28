@@ -3,6 +3,7 @@
 import streamlit as st
 import sqlite3
 import boto3
+import random
 from botocore.exceptions import NoCredentialsError
 
 
@@ -21,6 +22,7 @@ def main():
     st.set_page_config(page_title='Meeting Intelligence Application', page_icon=':microphone:', layout='wide')
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
+    st.header('Meeting Intelligence Application :bulb:')
 
     
     # Set AWS credentials
@@ -34,6 +36,8 @@ def main():
     
     if file is not None:
         upload_file_to_s3(file, bucket_name, access_key, secret_key)
+        filename = file.name
+        write_generic_question_to_database(filename, 'questions.db')
     else:
         st.warning("Please select an audio file to upload.")
 
@@ -49,7 +53,10 @@ def main():
     selected_file = st.selectbox("Select a processed audio file", files_list)
 
     if selected_file:
-        st.success(f"You selected: {selected_file}")
+        st.title('Generic Quentionaire')
+        c.execute("SELECT questions1, question2 from general_questions WHERE filename=?",(selected_file,))
+        result = c.fetchall()
+        st.write(result)
     else:
         st.warning("Please select a file.")
     
@@ -60,30 +67,13 @@ def main():
     # Question input box and submit button
     user_question = st.text_input('Ask a question related to the meeting!')
     if st.button('Submit') and user_question:
-        write_question_to_database(user_question, 'questions.db')
+        c.execute("INSERT INTO questions (question) VALUES (?)", (user_question,))
+        conn.commit()
+        st.write(f'You submitted the question: {user_question}')
 
 
 
 
-def write_question_to_database(question, db_path):
-    """
-    Writes a question to a SQLite database.
-
-    Parameters:
-        question (str): The question to be written to the database.
-        db_path (str): The file path of the SQLite database.
-
-    Returns:
-        None
-    """
-    # Connect to the SQLite database
-    conn = sqlite3.connect(db_path)
-    c = conn.cursor()
-
-    # Write question to database
-    c.execute("INSERT INTO questions (question) VALUES (?)", (question,))
-    conn.commit()
-    st.write(f'You submitted the question: {question}')
 
     # Close SQLite database connection
     conn.close()
@@ -154,5 +144,45 @@ def upload_file_to_s3(file, bucket_name, access_key, secret_key):
             
 
 
+def write_generic_question_to_database(filename, db_path):
+    """
+    Writes a question and file name to a SQLite database.
+
+    Parameters:
+        question (str): The question to be written to the database.
+        file_name (str): The name of the audio file.
+        db_path (str): The file path of the SQLite database.
+
+    Returns:
+        None
+    """
+    # Connect to the SQLite database
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    c.execute('''CREATE TABLE IF NOT EXISTS general_questions
+             (id INTEGER PRIMARY KEY, filename TEXT, question TEXT)''')
+
+    questions = {
+    "1": "What are the main takeaways from the meeting?",
+    "2": "GIve a brief summary of the meeting?",
+    "3": "What is the main topic being discussed in the meeting?",
+    "4": "Which language is being spoken?",
+    "5": "How long is the meeting duration?"
+    }
+
+    # Select two random questions
+    question1, question2 = random.sample(questions.values(), 2)
+
+    # Write question and file name to database
+    c.execute("INSERT INTO questions (filename, question) VALUES (?, ?)", (filename, question1))
+    c.execute("INSERT INTO questions (filename, question) VALUES (?, ?)", (filename, question2))
+    conn.commit()
+    # st.write(f'You submitted the question: {generic_question} for the file: {filename}')
+
+    # Close SQLite database connection
+    conn.close()
+    
+    
 if __name__ == "__main__":
     main()
