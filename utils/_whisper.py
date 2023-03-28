@@ -21,7 +21,6 @@ def transcribe_audio(file_path: str, model: str) -> str:
         api_key = os.getenv("OPENAI_API_KEY")
         file_path = "Apple Think Different - Steve Jobs Narrated Version.mp3"
         model = "whisper-1"
-
     """
     openai.api_key = config("OPENAI_API_KEY")
     audio_file = open(file_path, "rb")
