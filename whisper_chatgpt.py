@@ -27,7 +27,7 @@ def transcribe_audio(file_path: str, model: str) -> str:
     openai.api_key = config("OPENAI_API_KEY")
     audio_file = open(file_path, "rb")
     transcript = openai.Audio.transcribe(model, audio_file)
-    return transcript
+    return transcript["text"]
 
 
 def generate_text(prompt):
@@ -59,22 +59,23 @@ def generate_text(prompt):
 
 
 # string to txt file
-def string_to_txt(response):
-    with open("naming_convention.txt", "w") as text_file:
+def string_to_txt(response,filename):
+    with open(f"processed/{filename}.txt", "w") as text_file:
         text_file.write(response)
+    return f"processed/{filename}.txt"
 
 
-questions = {
+
+
+def create_prompt(response):
+    questions = {
     1 : "What was the main purpose or objective of the meeting?",
     2 : "Were all the agenda items discussed and resolved?",
-    3 : "Was there any conflict or disagreement among the members during the meeting?",
-    4 : "Were there any significant changes or decisions made during the meeting that will impact the organization or community?",
-    5 : "Was everyone given the opportunity to participate and voice their opinions or concerns during the meeting?"
-}
-
-
-def create_prompt(response, questions):
-    context = "\n Based on above answer the following questions:\n"
+    3 : "Was there any conflict or disagreement among the members during the meeting?"
+    # 4 : "Were there any significant changes or decisions made during the meeting that will impact the organization or community?",
+    # 5 : "Was everyone given the opportunity to participate and voice their opinions or concerns during the meeting?"
+    }
+    context = "\n Based on above answer the following questions less than 100 words:\n"
     
     for i, q in questions.items():
         context = context + f"{i}. {q}\n"
