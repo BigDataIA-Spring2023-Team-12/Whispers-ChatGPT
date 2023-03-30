@@ -2,7 +2,7 @@
 
 import streamlit as st
 import sqlite3
-from _utils import upload_file_to_s3_batch,get_files_from_s3_bucket, upload_file_to_s3, write_generic_question_to_database, create_tables
+from _utils import upload_file_to_s3_batch,get_files_from_s3_bucket, upload_file_to_s3, write_generic_question_to_database, create_tables,get_response_from_db
 
 def main():
     # Set background image
@@ -70,16 +70,20 @@ def main():
 
     # Question input box and submit button
     user_question = st.text_input('Ask a question related to the meeting!')
-    if st.button('Submit') and user_question:
-        c = conn.cursor()
-        c.execute("INSERT INTO questions (question) VALUES (?)", (user_question,))
-        conn.commit()
-        st.write(f'You submitted the question: {user_question}')
+    if st.button('Submit') and user_question and selected_file:
 
+        selected_filename, user_response = gpt_response() #update with the function name from below TODO
+        get_response_from_db(selected_filename, user_response)
+        
         """
         TODO: function to take user input and give response using chatgpt api
         
         """
+        # c = conn.cursor()
+        # c.execute("INSERT INTO questions (question) VALUES (?)", (user_question,))
+        # conn.commit()
+        # st.write(f'You submitted the question: {user_question}')
+
 
     # Close SQLite database connection
     conn.close()

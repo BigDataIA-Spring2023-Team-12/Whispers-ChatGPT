@@ -168,3 +168,42 @@ def upload_file_to_s3_batch(file, bucket_name, access_key, secret_key):
             st.error('AWS credentials not available')
         except Exception as e:
             st.error(f'Error uploading {file.name}: {e}')
+
+
+
+def get_response_from_db(selected_filename, user_response):
+    """
+    This function takes in a filename and response returned by the gpt_response function,
+    stores them in an SQLite database named "questions.db" with a table named "user_questions",
+    and displays both fields as text boxes using Streamlit.
+
+    Parameters:
+    -----------
+    filename : str
+        The filename returned by the gpt_response function.
+    response : str
+        The response returned by the gpt_response function.
+
+    Returns:
+    --------
+    None
+    """
+
+    # Connect to the SQLite database
+    conn = sqlite3.connect('questions.db')
+    c = conn.cursor()
+
+    # Create the table if it doesn't already exist
+    c.execute('''CREATE TABLE IF NOT EXISTS user_questions
+                 (filename TEXT, response TEXT)''')
+
+    # Insert the data into the table
+    c.execute("INSERT INTO user_questions VALUES (?, ?)", (selected_filename, user_response))
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+    # Display the data using Streamlit text boxes
+    st.text_input('Filename:', selected_filename)
+    st.text_input('Response:', user_response)
