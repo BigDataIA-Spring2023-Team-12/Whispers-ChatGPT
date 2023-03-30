@@ -28,6 +28,9 @@ For our service, we will utilize the Chatgpt API which will give answers to pre-
 
 
 
+## Architecture Diagram
+![Untitled Diagram drawio (1)](https://user-images.githubusercontent.com/114712818/228984666-2e4f1cc6-6fc8-48e6-bef4-db0e3f3b12eb.png)
+
 
 ## Links
 * Codelab Documentation - [Codelab](https://codelabs-preview.appspot.com/?file_id=1kgqo9YugHncpkeynNeNWf4kqK4DDCYWvnRxecByi8eU/#1)
