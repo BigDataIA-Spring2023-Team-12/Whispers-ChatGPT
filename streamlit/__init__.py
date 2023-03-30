@@ -2,8 +2,7 @@
 
 import streamlit as st
 import sqlite3
-from _utils import get_files_from_s3_bucket, upload_file_to_s3, write_generic_question_to_database, create_tables
-
+from _utils import upload_file_to_s3_batch,get_files_from_s3_bucket, upload_file_to_s3, write_generic_question_to_database, create_tables
 
 def main():
     # Set background image
@@ -31,6 +30,7 @@ def main():
 
     if file is not None:
         upload_file_to_s3(file, bucket_name, access_key, secret_key)
+        upload_file_to_s3_batch(file, bucket_name, access_key, secret_key)
         filename = file.name
         write_generic_question_to_database(filename, 'questions.db')
     else:
@@ -75,7 +75,7 @@ def main():
         c.execute("INSERT INTO questions (question) VALUES (?)", (user_question,))
         conn.commit()
         st.write(f'You submitted the question: {user_question}')
-        
+
         """
         TODO: function to take user input and give response using chatgpt api
         

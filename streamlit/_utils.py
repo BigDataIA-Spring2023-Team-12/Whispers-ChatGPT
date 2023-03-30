@@ -3,6 +3,7 @@ import random
 from botocore.exceptions import NoCredentialsError
 import streamlit as st
 import sqlite3
+import os
 
 
 def get_files_from_s3_bucket(bucket_name, access_key, secret_key):
@@ -130,3 +131,40 @@ def create_tables(conn):
             answers TEXT
         )
     ''')
+
+
+
+
+def upload_file_to_s3_batch(file, bucket_name, access_key, secret_key):
+    """
+    Uploads a file object to an AWS S3 bucket.
+
+    Parameters:
+        file (file object): The file object to upload.
+        bucket_name (str): The name of the S3 bucket to upload to.
+        access_key (str): The AWS access key ID.
+        secret_key (str): The AWS secret access key.
+
+    Returns:
+        None
+
+    Raises:
+        NoCredentialsError: If AWS credentials are not available.
+        Exception: If there was an error uploading the file to S3.
+    """
+
+    s3 = boto3.client("s3", aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+    folder_name = "batch"
+    file_name = os.path.basename(file.name)
+    s3_key = f"{folder_name}/{file_name}"
+    
+    # Button to upload file
+    if st.button('Upload to S3') and file is not None:
+        # Upload file to S3
+        try:
+            s3.upload_fileobj(file, bucket_name, s3_key)
+            st.success(f'{file.name} uploaded to {bucket_name}/{folder_name} folder')
+        except NoCredentialsError:
+            st.error('AWS credentials not available')
+        except Exception as e:
+            st.error(f'Error uploading {file.name}: {e}')
