@@ -15,12 +15,12 @@ The application will be used for processing audio files from a given meeting int
 
 The service will use two popular APIs - Whisper and Chatgpt
 
-1. Whisper:
+1. Whisper:<br>
 (https://openai.com/research/whisper) <br>
 The Whisper system is an automatic speech recognition system technology that has been programmed using supervised data collected from the internet. This data comprises over 680,000 hours of multilingual and multitask information. By utilizing this vast and varied dataset, the system has demonstrated an increased ability to accurately transcribe speech regardless of accents, background noise or technical jargon. Additionally, the technology has the capability to transcribe multiple languages and translate them into English.<br><br>
 For our service, we will use the whisper API to convert the audio file into processed transcripts which will be utilized by Chatgpt microservice to work upon the textual data.
 
-2. ChatGPT
+2. ChatGPT:<br>
 (https://platform.openai.com/docs/guides/chat) <br>
 ChatGPT API is an API (Application Programming Interface) based on the GPT (Generative Pre-trained Transformer) architecture developed by OpenAI. It allows developers to integrate state-of-the-art natural language processing (NLP) capabilities into their applications, such as chatbots, virtual assistants, and other conversational interfaces. The API can generate human-like responses to a wide variety of prompts, including text-based input and voice-based input, making it a powerful tool for building engaging and intelligent conversational applications.<br><br>
 For our service, we will utilize the Chatgpt API which will give answers to pre-defined prompts and user-defined prompts. The API will take the processed audio transcript as produced by whisper and answer general and user-given question based on the provided context. 
@@ -82,11 +82,11 @@ It includes the system architecture.
 The audio files of the meetings are stored here for reference.
 
 ##### /streamlit
-Includes the streamlit application interface for the user to interact with the whisper and chatgpt functionalities. It consists of 2 files, __init__.py and utils.py. Launch the application by running "__init__". The dependent functions and utilities are written and imported from "utils".  
+Includes the streamlit application interface for the user to interact with the whisper and chatgpt functionalities. It consists of 2 files, __init__.py and utils.py. Launch the application by running "__init__". The dependent functions and utilities are written and imported from "utils". Also contains the SQLite db file initialized for storing questions data.  
 
 
 ##### /utils
-The entire user-interface built using streamlit, the login/registration page, GEOS and Nexrad file downloads and dashboards.
+The backend files which consists of the functions to execute the whisper and chat APIs. 
 
 
 
@@ -94,6 +94,7 @@ The entire user-interface built using streamlit, the login/registration page, GE
 1. Open terminal
 2. Browse the location where you want to clone the repository
 3. Write the following command and press enter 
+
 ````
  git clone https://github.com/BigDataIA-Spring2023-Team-12/Whispers-ChatGPT.git
  ````
@@ -105,7 +106,7 @@ The entire user-interface built using streamlit, the login/registration page, GE
  ````
   pip install -r /path/to/requirements.txt
  ````
-6. Launch the application by firing up the index.py file in /streamlit
+6. Launch the application by firing up the __init__.py file in /streamlit
 
 
 
