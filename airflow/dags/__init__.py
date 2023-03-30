@@ -1,39 +1,62 @@
-from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from utils._s3 import upload_audio_to_s3, upload_text_file_to_s3
-from utils._openai import transcribe_audio, string_to_txt, create_prompt, generate_text
-
-def function_1():
-    pass
-
-
-def function_2():
-    pass
-
-
-def function_3():
-    pass
-
-
-def function_4():
-    pass
-
+from datetime import datetime
+from utils.s3 import upload_audio_to_s3, upload_text_file_to_s3
+from utils.openai import string_to_txt, generate_text
 
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'start_date': datetime(2023, 3, 30),
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG('my_dag', default_args=default_args, catchup=False, schedule_interval=timedelta(days=1))
+dag_1 = DAG('upload_audio_to_s3_dag', default_args=default_args)
 
-task_1 = PythonOperator(task_id='function_1', python_callable=function_1, dag=dag)
-task_2 = PythonOperator(task_id='function_2', python_callable=function_2, dag=dag)
-task_3 = PythonOperator(task_id='function_3', python_callable=function_3, dag=dag)
-task_4 = PythonOperator(task_id='function_4', python_callable=function_4, dag=dag)
+upload_audio_task = PythonOperator(
+    task_id='upload_audio_to_s3_task',
+    python_callable=upload_audio_to_s3,
+    op_kwargs={
+        'audio_file_path': 'path/to/audio/file',
+        's3_bucket_name': 'the-data-guys',
+        's3_object_key': 'path/to/s3'
+    },
+    dag=dag_1,
+)
+
+dag_2 = DAG('string_to_txt_dag', default_args=default_args)
+
+transcript_to_txt_task = PythonOperator(
+    task_id='string_to_txt_task',
+    python_callable=string_to_txt,
+    op_kwargs={
+        'response': 'transcript string',
+        'filename': 'output_file_name.txt'
+    },
+    dag=dag_2,
+)
+
+dag_3 = DAG('upload_text_file_to_s3_dag', default_args=default_args)
+
+upload_txt_task = PythonOperator(
+    task_id='upload_text_file_to_s3_task',
+    python_callable=upload_text_file_to_s3,
+    op_kwargs={
+        'file_path': 'path/to/txt/file',
+        'bucket_name': 'your-bucket-name',
+        'object_name': 'path/to/s3'
+    },
+    dag=dag_3,
+)
+
+dag_4 = DAG('generate_text_dag', default_args=default_args)
 
 
-task_1 >> task_2 >> task_3 >> task_4
+generate_text_task = PythonOperator(
+    task_id='generate_text_task',
+    python_callable=generate_text,
+    op_kwargs={
+        'prompt': 'prompt string'
+    },
+    dag=dag_4,
+)
