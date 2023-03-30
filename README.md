@@ -1,3 +1,8 @@
+
+# Project Title
+
+A brief description of what this project does and who it's for
+
 # Assignement 4 : Model-as-a-Service
 
 
@@ -11,13 +16,13 @@ The application will be used for processing audio files from a given meeting int
 The service will use two popular APIs - Whisper and Chatgpt
 
 1. Whisper:
-(https://openai.com/research/whisper)
-The Whisper system is an automatic speech recognition system technology that has been programmed using supervised data collected from the internet. This data comprises over 680,000 hours of multilingual and multitask information. By utilizing this vast and varied dataset, the system has demonstrated an increased ability to accurately transcribe speech regardless of accents, background noise or technical jargon. Additionally, the technology has the capability to transcribe multiple languages and translate them into English.<br>
+(https://openai.com/research/whisper) <br>
+The Whisper system is an automatic speech recognition system technology that has been programmed using supervised data collected from the internet. This data comprises over 680,000 hours of multilingual and multitask information. By utilizing this vast and varied dataset, the system has demonstrated an increased ability to accurately transcribe speech regardless of accents, background noise or technical jargon. Additionally, the technology has the capability to transcribe multiple languages and translate them into English.<br><br>
 For our service, we will use the whisper API to convert the audio file into processed transcripts which will be utilized by Chatgpt microservice to work upon the textual data.
 
 2. ChatGPT
-(https://platform.openai.com/docs/guides/chat)
-ChatGPT API is an API (Application Programming Interface) based on the GPT (Generative Pre-trained Transformer) architecture developed by OpenAI. It allows developers to integrate state-of-the-art natural language processing (NLP) capabilities into their applications, such as chatbots, virtual assistants, and other conversational interfaces. The API can generate human-like responses to a wide variety of prompts, including text-based input and voice-based input, making it a powerful tool for building engaging and intelligent conversational applications.<br>
+(https://platform.openai.com/docs/guides/chat) <br>
+ChatGPT API is an API (Application Programming Interface) based on the GPT (Generative Pre-trained Transformer) architecture developed by OpenAI. It allows developers to integrate state-of-the-art natural language processing (NLP) capabilities into their applications, such as chatbots, virtual assistants, and other conversational interfaces. The API can generate human-like responses to a wide variety of prompts, including text-based input and voice-based input, making it a powerful tool for building engaging and intelligent conversational applications.<br><br>
 For our service, we will utilize the Chatgpt API which will give answers to pre-defined prompts and user-defined prompts. The API will take the processed audio transcript as produced by whisper and answer general and user-given question based on the provided context. 
 
 
@@ -46,35 +51,40 @@ Documentation on Codelabs<br>
 
 ## Process Flow
 
-1. Made public and private endpoints with JWT Token based authentication enabled for private endpoints.
-2. Designed service plan as below:
-- Free - 10 API request limit - reset everyhour
-- Gold - 15 API request limit - reset everyhour
-- Platinum - 20 API request limit  - reset everyhour
-3. Created user registration page with functionality
-- Registering as new user and choosing a plan
-- Feature to change the password
-4. Test the workflow using 3 users each created for a specific plan   
-5. Enhanced the logging to capture all user activity request to check the API request count and compare with enrolled plan for the given user.
-6. Designed dashboard within streamlit accessible by the admin/developers/owner only to track users’ activity
-7. Designed a dashboard for user level analytics 
-8. Created a CLI using typer1 to execute the functionality
-9. Package the entire CLI as a python wheel package to access all endpoints 
-10. Dockerize the microservices
-11. Deploy on cloud
+Process Flow :-
+
+1. Browse for an audio file from the system's local files.
+2. An upload button will store the audio file to an Amazon S3 bucket's folder.
+3. Use Whisper API to process the audio file and convert to a textual transcript.
+4. The whisper API will fetch the audio fie from S3 bucket's folder and store the processed file output into another bucket of S3 and SQLite db.
+5. Define a generic questionaire for the meetings audio.
+6. Use chatgpt API to get answers to these generic questions (send both the transcript and questions to chatgpt).
+7. Write the output into a database along with the associated filename.
+8. A select box drop-down on the streamlit interface will get list of all the files from the processed folder in the S3 bucket.
+9. On selecting a specific file, display the generic questions with answers, and a text box for user questions and a submit button.
+10. The submit button should again trigger the chatgpt api to get an answer and write in into the db.
+11. Log user activity by storing the question and their responses.
+12. Use airflow to automate workflow. Create 2 dags - adhoc process and batch process.
+13. Adhoc process will be triggered on the file upload to S3 button.
+14. Batch process will run once a day, using cron. The dag will process all the file collectively.
+
 
 
 ### Project Directory Structure
 
 ##### /airflow
-This folder contains all the functions created for FastAPI endpoints and their respective functional dependencies.
+This folder contains all the airflow dags created for adhoc and batch processes and their respective functional dependencies.
 
 ##### /arch-diag
-The folder contains a python file to update scape the metadata which will be used for daily scheduling of cron to keep the metadata updated.
+It includes the system architecture.
+
 ##### /data
-All the SQLite databases and present under this folder.
+The audio files of the meetings are stored here for reference.
+
 ##### /streamlit
-All the files related related to great-expectations data validation, such as validation suites, checkpoints and generated reports are contained under this folder.
+Includes the streamlit application interface for the user to interact with the whisper and chatgpt functionalities. It consists of 2 files, __init__.py and utils.py. Launch the application by running "__init__". The dependent functions and utilities are written and imported from "utils".  
+
+
 ##### /utils
 The entire user-interface built using streamlit, the login/registration page, GEOS and Nexrad file downloads and dashboards.
 
