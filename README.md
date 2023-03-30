@@ -70,7 +70,7 @@ Process Flow :-
 
 
 
-### Project Directory Structure
+## Project Directory Structure
 
 ##### /airflow
 This folder contains all the airflow dags created for adhoc and batch processes and their respective functional dependencies.
