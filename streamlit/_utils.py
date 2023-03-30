@@ -105,3 +105,28 @@ def write_generic_question_to_database(filename, db_path):
 
     # Close SQLite database connection
     conn.close()
+
+
+
+# Function to create tables
+def create_tables(conn):
+    c = conn.cursor()
+    
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS questions (
+            Id INTEGER PRIMARY KEY,
+            Filename TEXT,
+            transcript TEXT,
+            general_questions TEXT,
+            answers TEXT
+        )
+    ''')
+
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS user_questions (
+            Id INTEGER PRIMARY KEY,
+            Filename TEXT,
+            user_question TEXT,
+            answers TEXT
+        )
+    ''')

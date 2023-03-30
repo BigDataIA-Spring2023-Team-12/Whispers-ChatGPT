@@ -2,7 +2,7 @@
 
 import streamlit as st
 import sqlite3
-from _utils import get_files_from_s3_bucket, upload_file_to_s3, write_generic_question_to_database
+from _utils import get_files_from_s3_bucket, upload_file_to_s3, write_generic_question_to_database, create_tables
 
 
 def main():
@@ -38,8 +38,10 @@ def main():
 
     # Connect to SQLite database
     conn = sqlite3.connect('questions.db')
-    c = conn.cursor()
-
+      
+    # Create tables
+    create_tables(conn)
+    
     st.markdown("---")
 
     files_list = get_files_from_s3_bucket(bucket_name, access_key, secret_key)
@@ -49,9 +51,18 @@ def main():
 
     if selected_file:
         st.title('Generic Quentionaire')
-        c.execute("SELECT questions1, question2 from general_questions WHERE filename=?", (selected_file,))
-        result = c.fetchall()
-        st.write(result)
+        # c.execute("SELECT questions1, question2 from general_questions WHERE filename=?", (selected_file,))
+        # result = c.fetchall()
+        st.write('Question 1 : What was the main purpose or objective of the meeting?')
+        st.write('Question 2: Were all the agenda items discussed and resolved?')
+        st.write('Question 3: Was there any conflict or disagreement among the members during the meeting?')
+        st.markdown("---")
+        st.title('Answers -')
+        """
+        
+        TODO: function to get answers to generic questions
+
+        """
     else:
         st.warning("Please select a file.")
 
@@ -60,14 +71,18 @@ def main():
     # Question input box and submit button
     user_question = st.text_input('Ask a question related to the meeting!')
     if st.button('Submit') and user_question:
+        c = conn.cursor()
         c.execute("INSERT INTO questions (question) VALUES (?)", (user_question,))
         conn.commit()
         st.write(f'You submitted the question: {user_question}')
+        
+        """
+        TODO: function to take user input and give response using chatgpt api
+        
+        """
 
     # Close SQLite database connection
     conn.close()
-
-
 
 
 
