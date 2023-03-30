@@ -11,15 +11,16 @@ The application will be used for processing audio files from a given meeting int
 The service will use two popular APIs - Whisper and Chatgpt
 
 1. Whisper:
-Whisper is  
+(https://openai.com/research/whisper)
+The Whisper system is an automatic speech recognition system technology that has been programmed using supervised data collected from the internet. This data comprises over 680,000 hours of multilingual and multitask information. By utilizing this vast and varied dataset, the system has demonstrated an increased ability to accurately transcribe speech regardless of accents, background noise or technical jargon. Additionally, the technology has the capability to transcribe multiple languages and translate them into English.<br>
+For our service, we will use the whisper API to convert the audio file into processed transcripts which will be utilized by Chatgpt microservice to work upon the textual data.
+
+2. ChatGPT
+(https://platform.openai.com/docs/guides/chat)
+ChatGPT API is an API (Application Programming Interface) based on the GPT (Generative Pre-trained Transformer) architecture developed by OpenAI. It allows developers to integrate state-of-the-art natural language processing (NLP) capabilities into their applications, such as chatbots, virtual assistants, and other conversational interfaces. The API can generate human-like responses to a wide variety of prompts, including text-based input and voice-based input, making it a powerful tool for building engaging and intelligent conversational applications.<br>
+For our service, we will utilize the Chatgpt API which will give answers to pre-defined prompts and user-defined prompts. The API will take the processed audio transcript as produced by whisper and answer general and user-given question based on the provided context. 
 
 
-
-We previously decoupled our application into two microservices - Streamlit and FastAPI, along with dockerization and Airflow.
-In the scope of this assignment, <br>
-We have enabled rate limiting for authentiacated users in accordance to the plan specific to a user. <br>
-Enhanced the Streamlit application with adding a dashboard to track users' activity and show analytics at user level for registered authenticated users. <br>
-Designed a CLI for accessing the endpoints and packaged it as a wheel. <br>
 
 
 
