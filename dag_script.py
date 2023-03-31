@@ -21,7 +21,6 @@ def adhoc_script(audio_file_path,bucket_name,s3_path,file_name):
     print(prompt)
     # 5. ask question to openai
     response = generate_text(prompt)
-
     return response
 
 

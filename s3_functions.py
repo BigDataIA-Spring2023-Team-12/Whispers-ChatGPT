@@ -1,5 +1,6 @@
 import boto3
 import os
+
 def upload_audio_to_s3(audio_file_path, s3_bucket_name, s3_object_key):
     """
     Uploads an audio file to an S3 bucket.
@@ -51,32 +52,23 @@ def download_audio_file(bucket_name, file_key, local_path):
 
 
 
-def download_all_files_from_s3_bucket(bucket_name, local_directory):
-    # create the S3 resource
+
+def download_folder_files(bucket_name, folder_prefix):
     s3 = boto3.resource('s3')
+    bucket = s3.Bucket(f'{bucket_name}')
 
-    # create the bucket object
-    bucket = s3.Bucket(bucket_name)
+    for obj in bucket.objects.filter(Prefix=folder_prefix):
+        if obj.key.endswith('/'):
+            continue # skip directories
+        target_file_path = obj.key.split('/')[-1] # extract the file name
+        print(target_file_path)
+        bucket.download_file(obj.key, target_file_path)
 
-    # create the local directory if it doesn't exist
-    if not os.path.exists(local_directory):
-        os.makedirs(local_directory)
-
-    # download each object in the bucket
-    for obj in bucket.objects.all():
-        # create the local file path
-        local_file_path = os.path.join(local_directory, obj.key)
-
-        # download the object
-        bucket.download_file(obj.key, local_file_path)
-
-        print(f"Downloaded {obj.key} to {local_file_path}")
-
-download_all_files_from_s3_bucket("the-data-guys", "batch/")
+download_folder_files('the-data-guys','adhoc/')
 # download_audio_file("the-data-guys", "adhoc/steve-jobs-think-different.mp3", 'sample.mp3')
 
 
-# print(upload_audio_to_s3("steve-jobs-think-different.mp3","the-data-guys","adhoc/steve-jobs-think-different.mp3"))
+# print(upload_audio_to_s3("steve-jobs-think-different.mp3","the-data-guys","adhoc/sample.mp3"))
 
 # s3 = boto3.resource('s3')
 # for bucket in s3.buckets.all():
