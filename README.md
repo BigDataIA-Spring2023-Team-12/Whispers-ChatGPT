@@ -31,6 +31,7 @@ For our service, we will utilize the Chatgpt API which will give answers to pre-
 * Codelab Documentation - [Codelab](https://codelabs-preview.appspot.com/?file_id=1kgqo9YugHncpkeynNeNWf4kqK4DDCYWvnRxecByi8eU/#1)
 * GitHub Repository - [GitHub](https://github.com/BigDataIA-Spring2023-Team-12/Whispers-ChatGPT)
 * Streamlit Application - [Streamlit]()
+* Application Demo - [Demo](https://codelabs-preview.appspot.com/?file_id=1kgqo9YugHncpkeynNeNWf4kqK4DDCYWvnRxecByi8eU/#12)
 
 
 ## LEARNINGS/TECH USED
