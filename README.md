@@ -1,8 +1,3 @@
-
-# Project Title
-
-A brief description of what this project does and who it's for
-
 # Assignement 4 : Model-as-a-Service
 
 
